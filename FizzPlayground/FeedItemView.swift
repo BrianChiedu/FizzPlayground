@@ -19,23 +19,36 @@ import SwiftUI
  */
 
 struct FeedItemView: View {
-    let feedItem: FeedItem
+    var feedItem: FeedItem
     
     //    static var signUpDate: Date {
     //        let seconds = feedItem.createdTimestamp
     //        let date = Date(timeIntervalSince1970: TimeInterval(seconds))
     //    }
     
+    @State private var votes: Int
+    @State private var signUpDate: Date
+    
+    init(feedItem: FeedItem, votes: Int = 0, signUpDate: Date = Date.now) {
+        self.feedItem = feedItem
+        self.votes = feedItem.numOfVotes
+        let seconds = feedItem.createdTimestamp
+        self.signUpDate = Date(timeIntervalSince1970: TimeInterval(seconds))
+    }
+    
+    
+    
     var body: some View {
         VStack(alignment: .leading){
-            HStack(spacing: 170){
+            HStack(spacing: 100){
                 Text(feedItem.handleName)
-                Text(Date.now.formatted(date: .abbreviated, time: .omitted))
+                Text(signUpDate.formatted(date: .abbreviated, time: .omitted))
             }
             
-            Text(feedItem.contentText.prefix(200))
+            Text(feedItem.contentText.prefix(200)).lineLimit(1)
             
-            Text("\(feedItem.numOfVotes) votes")
+            Stepper("\(votes.formatted()) votes", value: $votes, step: 1)
+            
         }
     }
 }
